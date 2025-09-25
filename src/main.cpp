@@ -16,14 +16,14 @@ using namespace vex;
 // A global instance of competition
 competition Competition;
 
-controller baseController;
-controller armsController;
+controller baseController(primary);
+controller armsController(partner);
 
-motor intakeMotor(PORT4);
-motor beltMotor(PORT2);
+motor intakeMotor(PORT4, false);
+motor beltMotor(PORT2, true);
 motor_group fullIntake(intakeMotor, beltMotor);
 
-motor leftMotor(PORT1, false);
+motor leftMotor(PORT6, false);
 motor rightMotor(PORT8, true);
 Drivetrain drivebase(&leftMotor, &rightMotor);
 
@@ -77,10 +77,10 @@ void usercontrol(void) {
   // User control code here, inside the loop
   while (1) {
     // run intake motors 
-    if (baseController.ButtonR1.pressing()) {
+    if (armsController.ButtonR1.pressing()) {
       fullIntake.spin(vex::forward, 100, vex::pct);
     }
-    else if (baseController.ButtonR2.pressing()){
+    else if (armsController.ButtonR2.pressing()){
       fullIntake.spin(vex::forward, -100, vex::pct);
     }
     else {
