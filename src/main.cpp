@@ -23,7 +23,7 @@ motor intakeMotor(PORT4, false);
 motor beltMotor(PORT2, true);
 motor_group fullIntake(intakeMotor, beltMotor);
 
-motor leftMotor(PORT6, false);
+motor leftMotor(PORT12, false);
 motor rightMotor(PORT8, true);
 Drivetrain drivebase(&leftMotor, &rightMotor);
 
