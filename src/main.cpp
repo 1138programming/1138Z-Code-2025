@@ -23,8 +23,8 @@ motor intakeMotor(PORT4, false);
 motor beltMotor(PORT2, true);
 motor_group fullIntake(intakeMotor, beltMotor);
 
-motor leftMotor(PORT12, false);
-motor rightMotor(PORT8, true);
+motor leftMotor(PORT12, true);
+motor rightMotor(PORT8, false);
 Drivetrain drivebase(&leftMotor, &rightMotor);
 
 //left forwardback right turning
@@ -83,11 +83,14 @@ void usercontrol(void) {
     else if (armsController.ButtonR2.pressing()){
       fullIntake.spin(vex::forward, -100, vex::pct);
     }
+    else if (armsController.ButtonL1.pressing()) {
+      intakeMotor.spin(vex::forward, -100, vex::pct);
+    }
     else {
       fullIntake.spin(vex::forward, 0, vex::pct);
     }
 
-    drivebase.updateSplitArcade(baseController.Axis3.position(), baseController.Axis1.position()); 
+    drivebase.updateSplitArcade(baseController.Axis3.position(), -baseController.Axis1.position()); 
 
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
