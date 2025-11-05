@@ -2,28 +2,29 @@
 #define DRIVETRAIN_HPP
 
 #include "vex.h"
-#include "constants.hpp"
 
 class Drivetrain {
     private:
-        vex::motor* leftMotor;
-        vex::motor* rightMotor;
+        vex::motor_group* leftMotors;
+        vex::motor_group* rightMotors;
+        const float splitDriveMult = 1.0;
+        const float splitTurnMult = 0.6;
 
     public:
-        Drivetrain(vex::motor* leftMotor, vex::motor* rightMotor) {
-            this->leftMotor = leftMotor;
-            this->rightMotor = rightMotor;
+        Drivetrain(vex::motor_group* leftMotors, vex::motor_group* rightMotor) {
+            this->leftMotors = leftMotors;
+            this->rightMotors = rightMotors;
             
-            this->leftMotor->setStopping(vex::brake);
-            this->rightMotor->setStopping(vex::brake);
+            this->leftMotors->setStopping(vex::brake);
+            this->rightMotors->setStopping(vex::brake);
         }
 
         void updateSplitArcade(int leftStickPct, int rightStickPct) {
-            leftStickPct = (int)((float)leftStickPct * Constants::splitDriveMult);
-            rightStickPct = (int)((float)rightStickPct * Constants::splitTurnMult);
+            leftStickPct = (int)((float)leftStickPct * splitDriveMult);
+            rightStickPct = (int)((float)rightStickPct * splitTurnMult);
 
-            this->leftMotor->spin(vex::forward, (leftStickPct + rightStickPct), vex::pct);
-            this->rightMotor->spin(vex::forward, (leftStickPct - rightStickPct), vex::pct);
+            this->leftMotors->spin(vex::forward, (leftStickPct + rightStickPct), vex::pct);
+            this->rightMotors->spin(vex::forward, (leftStickPct - rightStickPct), vex::pct);
         }
 };
 

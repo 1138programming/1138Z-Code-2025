@@ -8,7 +8,6 @@
 /*----------------------------------------------------------------------------*/
 
 #include "vex.h"
-#include "constants.hpp"
 #include "drivetrain.hpp"
 
 using namespace vex;
@@ -16,16 +15,23 @@ using namespace vex;
 // A global instance of competition
 competition Competition;
 
-controller baseController(primary);
-controller armsController(partner);
+controller controller1;
 
-motor intakeMotor(PORT4, false);
-motor beltMotor(PORT2, true);
-motor_group fullIntake(intakeMotor, beltMotor);
+motor intakeMotor(PORT16, false);
 
-motor leftMotor(PORT12, true);
-motor rightMotor(PORT8, false);
-Drivetrain drivebase(&leftMotor, &rightMotor);
+motor armLeft(PORT20, true);
+motor armRight(PORT10, false);
+motor_group fullArm(armLeft, armRight);
+
+motor frontLeftMotor(PORT14, true);
+motor backLeftMotor(PORT18, false);
+motor_group leftMotors(frontLeftMotor, backLeftMotor);
+
+motor frontRightMotor(PORT15, true);
+motor backRightMotor(PORT17, false);
+motor_group rightMotors(frontRightMotor, backRightMotor);
+
+Drivetrain drivebase(&leftMotors, &rightMotors);
 
 //left forwardback right turning
 
@@ -45,6 +51,9 @@ void pre_auton(void) {
 
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
+
+  intakeMotor.setStopping(vex::hold);
+  fullArm.setStopping(vex::hold);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -76,21 +85,29 @@ void autonomous(void) {
 void usercontrol(void) {
   // User control code here, inside the loop
   while (1) {
-    // run intake motors 
-    if (armsController.ButtonR1.pressing()) {
-      fullIntake.spin(vex::forward, 100, vex::pct);
+    // run arm motors 
+    if (controller1.ButtonR1.pressing()) {
+      fullArm.spin(vex::forward, 100, vex::pct);
     }
-    else if (armsController.ButtonR2.pressing()){
-      fullIntake.spin(vex::forward, -100, vex::pct);
+    else if (controller1.ButtonR2.pressing()){
+      fullArm.spin(vex::forward, -100, vex::pct);
     }
-    else if (armsController.ButtonL1.pressing()) {
+    else {
+      fullArm.spin(vex::forward, 0, vex::pct);
+    }
+
+    // run intake motors
+    if (controller1.ButtonL1.pressing()) {
+      intakeMotor.spin(vex::forward, 100, vex::pct);
+    }
+    else if (controller1.ButtonL2.pressing()){
       intakeMotor.spin(vex::forward, -100, vex::pct);
     }
     else {
-      fullIntake.spin(vex::forward, 0, vex::pct);
+      intakeMotor.spin(vex::forward, 0, vex::pct);
     }
 
-    drivebase.updateSplitArcade(baseController.Axis3.position(), -baseController.Axis1.position()); 
+    drivebase.updateSplitArcade(controller1.Axis3.position(), controller1.Axis1.position()); 
 
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
