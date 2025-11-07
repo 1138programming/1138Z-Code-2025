@@ -17,18 +17,18 @@ competition Competition;
 
 controller controller1;
 
-motor intakeMotor(PORT16, false);
+motor intakeMotor(PORT16, true);
 
-motor armLeft(PORT20, true);
-motor armRight(PORT10, false);
+motor armLeft(PORT20, false);
+motor armRight(PORT10, true);
 motor_group fullArm(armLeft, armRight);
 
-motor frontLeftMotor(PORT14, true);
+motor frontLeftMotor(PORT14, false);
 motor backLeftMotor(PORT18, false);
 motor_group leftMotors(frontLeftMotor, backLeftMotor);
 
 motor frontRightMotor(PORT15, true);
-motor backRightMotor(PORT17, false);
+motor backRightMotor(PORT17, true);
 motor_group rightMotors(frontRightMotor, backRightMotor);
 
 Drivetrain drivebase(&leftMotors, &rightMotors);
@@ -107,7 +107,7 @@ void usercontrol(void) {
       intakeMotor.spin(vex::forward, 0, vex::pct);
     }
 
-    drivebase.updateSplitArcade(controller1.Axis3.position(), controller1.Axis1.position()); 
+    drivebase.updateSplitArcade(controller1.Axis3.position(), -controller1.Axis1.position()); 
 
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.

@@ -11,12 +11,9 @@ class Drivetrain {
         const float splitTurnMult = 0.6;
 
     public:
-        Drivetrain(vex::motor_group* leftMotors, vex::motor_group* rightMotor) {
+        Drivetrain(vex::motor_group* leftMotors, vex::motor_group* rightMotors) {
             this->leftMotors = leftMotors;
             this->rightMotors = rightMotors;
-            
-            this->leftMotors->setStopping(vex::brake);
-            this->rightMotors->setStopping(vex::brake);
         }
 
         void updateSplitArcade(int leftStickPct, int rightStickPct) {
@@ -24,7 +21,13 @@ class Drivetrain {
             rightStickPct = (int)((float)rightStickPct * splitTurnMult);
 
             this->leftMotors->spin(vex::forward, (leftStickPct + rightStickPct), vex::pct);
+
             this->rightMotors->spin(vex::forward, (leftStickPct - rightStickPct), vex::pct);
+        }
+        
+        void setStoppingBrake() {
+            this->leftMotors->setStopping(vex::brake);
+            this->rightMotors->setStopping(vex::brake);
         }
 };
 
